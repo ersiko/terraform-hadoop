@@ -21,11 +21,6 @@ unzip awscli-bundle.zip
   # disable hugepages
   echo never > /sys/kernel/mm/transparent_hugepage/enabled
   echo never > /sys/kernel/mm/transparent_hugepage/defrag
-  # enable some system swap
-  mkdir /var/swap; touch /var/swap/swapfile; chown root:root /var/swap/swapfile; chmod 600 /var/swap/swapfile
-  dd if=/dev/zero of=/var/swap/swapfile bs=1014 count=2097152
-  mkswap /var/swap/swapfile; swapon /var/swap/swapfile
-  echo "/var/swap/swapfile      swap    swap    defaults        0 0" >> /etc/fstab
   # selinux permissive mode
   setenforce 0 # needed for Ambari setup to run; not persistent
   # set up ntp; default configuration will do
