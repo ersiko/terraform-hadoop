@@ -1,0 +1,22 @@
+{
+  "blueprint" : "testclus",
+  "default_password" : "admin",
+  "host_groups" :[
+    { 
+      "name":"host_group_2",
+      "hosts":[{"fqdn":"ip-172-31-8-115.us-west-2.compute.internal"},{"fqdn":"ip-172-31-12-114.us-west-2.compute.internal"},{"fqdn":"ip-172-31-1-237.us-west-2.compute.internal"},{"fqdn":"ip-172-31-10-168.us-west-2.compute.internal"}]
+    },
+    {
+      "name":"host_group_1",
+      "hosts":[{"fqdn":"ip-172-31-9-63.us-west-2.compute.internal"}]
+    },
+    {
+      "name":"host_group_3",
+      "hosts":[{"fqdn":"ip-172-31-2-176.us-west-2.compute.internal"}]
+    },
+    {
+      "name":"host_group_4",
+      "hosts":[{"fqdn":"ip-172-31-4-93.us-west-2.compute.internal"}]
+    }
+  ]
+}
