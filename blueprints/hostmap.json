@@ -8,7 +8,7 @@
     },
     {
       "name":"nn_host_group",
-      "hosts":[{""}]
+      "hosts":[{"fqdn":""}]
     },
     {
       "name":"hive_host_group",
