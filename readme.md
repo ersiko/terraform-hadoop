@@ -8,23 +8,25 @@ Master nodes in "mnodeinst.tf" are provisioned with MySQL repositories.
 
 Instructions:
 
-1. Create terraform.tfvars with AWS access key and secret key for your IAM account. 
+1. Create terraform.tfvars with AWS access key and secret key for your IAM account, IAM keypair and local keyfile.
 2. Ensure terraform is installed. From the "hadoop" directory, run "terraform plan" and correct any errors.
 3. Execute "terraform apply" and watch the build output. Current provisioners are CentOS-specific bash scripts.
-4. Output from the terraform command will include the utility host's public address.
-5. Recommendation is to size the cluster and then install via the Ambari setup wizard for the initial installation.
-6. Connect to the remote network via ssh SOCKS proxy:
+
+TODO: generate hostmap from tf outputs using Ansible templates (jinja), replace provisioners with playbooks, remove swap configuration from cluster hosts. 
+
+4. Output from the terraform command will include the utility host's public address. Recommendation is to size the cluster and then install via the Ambari setup wizard for the initial installation.
+5. Connect to the remote network via ssh SOCKS proxy:
 
 $ ssh -i ~/.ssh/myrsakey -D 55055 [terraform output: "util_public_dns"]
 
-7. Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
-8. Connect to Ambari in your browser with HTTP://[terraform output: "util_private_dns"]:8080/
+6. Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
+7. Connect to Ambari in your browser with HTTP://[terraform output: "util_private_dns"]:8080/
 
 (default login is admin:admin)
 
-9. Launch the installation wizard (click the button, follow the steps); OR
+8. Launch the installation wizard (click the button, follow the steps); OR
 
-9. Configure a blueprint and launch a cluster:
+8. Configure a blueprint and launch a cluster:
 
 a. Get a list of blue prints (should be an empty set to start):
 
@@ -38,6 +40,8 @@ c. Get a list of clusters (should be an empty set to start):
 curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters
 
 d. Post a cluster configuration template (created from terraform output, a list of the cluster nodes (see blueprints/hostmap.json):
+
+TODO: namethe host roles descriptively in the default blueprint
 
 curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters -d @hostmap.json
 
