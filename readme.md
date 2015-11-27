@@ -8,7 +8,7 @@ Master nodes in "mnodeinst.tf" are provisioned with MySQL repositories.
 
 Instructions:
 
-1. Create terraform.tfvar with AWS access key and secret key for your IAM account. 
+1. Create terraform.tfvars with AWS access key and secret key for your IAM account. 
 2. Ensure terraform is installed. From the "hadoop" directory, run "terraform plan" and correct any errors.
 3. Execute "terraform apply" and watch the build output. Current provisioners are CentOS-specific bash scripts.
 4. Output from the terraform command will include the utility host's public address.
