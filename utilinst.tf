@@ -102,13 +102,3 @@ resource "aws_security_group" "sg_clus_util_access" {
     security_groups = ["${aws_security_group.sg_cluster_access.id}"]
   }
 }
-
-/* output the group id */
-output "sg_utility_access_id" {
-  value = "${aws_security_group.sg_utility_access.id}"
-}
-
-/* output the group id */
-output "sg_clus_util_access_id" {
-  value = "${aws_security_group.sg_clus_util_access.id}"
-}

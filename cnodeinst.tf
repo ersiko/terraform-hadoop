@@ -97,11 +97,6 @@ resource "aws_security_group" "sg_cluster_access" {
   }
 }
 
-/* output the group id */
-output "sg_cluster_access_id" {
-  value = "${aws_security_group.sg_cluster_access.id}"
-}
-
 /* create a second group for cluster inter-connections */
 resource "aws_security_group" "sg_clus_clus_access" {
   name = "sg_clus_clus_access"
@@ -115,7 +110,3 @@ resource "aws_security_group" "sg_clus_clus_access" {
   }
 }
 
-/* output the group id */
-output "sg_clus_clus_access_id" {
-  value = "${aws_security_group.sg_clus_clus_access.id}"
-}
