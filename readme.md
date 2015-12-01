@@ -12,7 +12,7 @@ Instructions:
 2. Ensure terraform is installed. From the "hadoop" directory, run "terraform plan" and correct any errors.
 3. Execute "terraform apply" and watch the build output. Current provisioners are CentOS-specific bash scripts.
 
-TODO: generate hostmap from tf outputs using Ansible templates (jinja), replace provisioners with playbooks, remove swap configuration from cluster hosts. 
+TODO: generate hostmap from tf outputs using Ansible templates (jinja), replace provisioners with playbooks.
 
 4. Output from the terraform command will include the utility host's public address. Recommendation is to size the cluster and then install via the Ambari setup wizard for the initial installation.
 5. Connect to the remote network via ssh SOCKS proxy:
@@ -40,8 +40,6 @@ c. Get a list of clusters (should be an empty set to start):
 curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters
 
 d. Post a cluster configuration template (created from terraform output, a list of the cluster nodes (see blueprints/hostmap.json):
-
-TODO: namethe host roles descriptively in the default blueprint
 
 curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters -d @hostmap.json
 
