@@ -1,0 +1,9 @@
+[utility]
+${aws_instance.utility.private_dns}
+
+[cnodes]
+${aws_instance.cnode.${lookup(var.cluster_nodes, count.index)}.private_dns}
+
+[mnodes]
+${aws_instance.mnode.${lookup(var.master_nodes, count.index)}.private_dns}
+
