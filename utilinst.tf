@@ -8,7 +8,7 @@ resource "aws_instance" "utility" {
 
   /* select the appropriate AMI */
   ami = "${lookup(var.ami, var.region.primary)}"
-  instance_type = "t2.micro"
+  instance_type = "${var.insttype.utility}"
 
   /* delete the volume on termination */
   root_block_device {
@@ -27,32 +27,30 @@ resource "aws_instance" "utility" {
     Tier = "utility"
   }
 
-  /* trying out a provisioner setup */
+  /* provisioners for Ansible setup */
 
-  /* copy up and execute the user data script */
+  /* copy up private keyfile for ansible to use */
   provisioner "file" {
-    source = "scripts/util_bootstrap.sh"
-    destination = "/tmp/bootstrap.sh"
+    source = "${var.keyfile}"
+    destination = "/home/centos/.ssh/mykey"
     connection {
       type = "ssh"
       user = "centos"
       key_file = "${var.keyfile}"
     }
   }
-  provisioner "file" {
-    source = "scripts/userswitch.sh"
-    destination = "/tmp/userswitch.sh"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
+
   provisioner "remote-exec" {
     inline = [
-    "chmod +x /tmp/bootstrap.sh /tmp/userswitch.sh",
-    "sudo /tmp/bootstrap.sh",
-    "sudo /tmp/userswitch.sh"
+    "chmod 600 /home/centos/.ssh/mykey",
+    "sudo yum install wget zip unzip telnet -y",
+    "sudo wget -nv https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
+    "sudo yum install epel-release-latest-7.noarch.rpm -y",
+    "sudo yum update -y",
+    "sudo yum install ansible -y",
+    "sudo su - -c 'echo ${aws_instance.utility.private_dns} > /etc/ansible/hosts'",
+    "sudo su - -c 'sed -i 's/#host_key_checking/host_key_checking/p' /etc/ansible/ansible.cfg'",
+    "ansible --private-key=~/.ssh/mykey all -m ping"
     ]
     connection {
       type = "ssh"

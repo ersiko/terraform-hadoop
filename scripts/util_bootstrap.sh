@@ -3,6 +3,13 @@
 # ensure the system is up to date
 yum update -y
 
+# install EPEL for Ansible support; then Ansible
+wget -nv https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install epel-release-latest-7.noarch.rpm -y
+yum install ansible -y
+
+
+
 # install some stuff
 yum install bind-utils nc telnet nmap ntp sysstat httpd zip unzip wget -y
 
@@ -38,4 +45,4 @@ unzip awscli-bundle.zip
   nohup /etc/init.d/ambari-server start
  
 # clean up
-rm -rf awscli-bundle jre-7u45-linux-x64.rpm
+rm -rf awscli-bundle jre-7u45-linux-x64.rpm epel-release-latest-7.noarch.rpm
