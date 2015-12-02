@@ -29,29 +29,13 @@ resource "aws_instance" "mnode" {
   # cluster size
   count = "${var.count.mnodes}"
 
-  /* copy up and execute the user data script */
-  provisioner "file" {
-    source = "scripts/mnode_bootstrap.sh"
-    destination = "/tmp/bootstrap.sh"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
-  provisioner "file" {
-    source = "scripts/userswitch.sh"
-    destination = "/tmp/userswitch.sh"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
+/* saving this setup detail for later
+
   provisioner "remote-exec" {
     inline = [
-    "chmod +x /tmp/bootstrap.sh /tmp/userswitch.sh",
-    "sudo /tmp/bootstrap.sh",
+    "sudo yum install zip unzip wget telnet -y",
+    "sudo wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo",
+    "sudo yum install ambali-agent -y",
     "sudo sed -i s/hostname=localhost/hostname=${aws_instance.utility.private_dns}/ /etc/ambari-agent/conf/ambari-agent.ini",
     "sudo ambari-agent start",
     "sudo /tmp/userswitch.sh"
@@ -62,6 +46,8 @@ resource "aws_instance" "mnode" {
       key_file = "${var.keyfile}"
     }
   }
+*/
+
 }
 
 /* output the instance address */
