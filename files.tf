@@ -5,7 +5,3 @@ resource "template_file" "cluster_hosts" {
     mnode_addresses = "${join("\n", aws_instance.mnode.*.private_dns)}"
   }
 }
-
-output "cluster_host_addresses" {
-  value = "${template_file.cluster_hosts.rendered}"
-}
