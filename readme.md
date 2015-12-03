@@ -21,6 +21,7 @@ $ ssh -i ~/.ssh/myrsakey -D 55055 [terraform output: "util_public_dns"]
 6. Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
 
 //everything from here down is broken until playbooks are complete
+
 7. Connect to Ambari in your browser with:
  
 HTTP://[terraform output: "util_private_dns"]:8080/    #(default login is admin:admin)
