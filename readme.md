@@ -1,28 +1,29 @@
-Hadoop cluster terraform templates and provisioning scripts for Ambari / Hortonworks.
+Hadoop cluster terraform templates and Ansible playbooks for Ambari / Hortonworks configuration.
 
 Specify most cluster configuration variables in "variables.tf".
 
-Use internal ec2 node names for Ambari system list.
+Ansible host inventory is automatically generated from template (see 'files.tf') and configured on the utility host. A successful build should result in an ansible ping response from each cluster node in the output.
 
-Master nodes in "mnodeinst.tf" are provisioned with MySQL repositories.
+TODO: deploy Hadoop dependencies, deploy agents and register with ambari-server via Ansible playbooks
+
+Master nodes in "mnodeinst.tf" are provisioned with MySQL repositories, and can be used to configure Hadoop services.
 
 Instructions:
 
 1. Create terraform.tfvars with AWS access key and secret key for your IAM account, IAM keypair and local keyfile.
 2. Ensure terraform is installed. From the "hadoop" directory, run "terraform plan" and correct any errors.
 3. Execute "terraform apply" and watch the build output. Current provisioners are CentOS-specific bash scripts.
-
-TODO: generate hostmap from tf outputs using Ansible templates (jinja), replace provisioners with playbooks.
-
-4. Output from the terraform command will include the utility host's public address. Recommendation is to size the cluster and then install via the Ambari setup wizard for the initial installation.
+4. Output from the terraform command includes the utility host's public dns address.
 5. Connect to the remote network via ssh SOCKS proxy:
 
 $ ssh -i ~/.ssh/myrsakey -D 55055 [terraform output: "util_public_dns"]
 
 6. Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
-7. Connect to Ambari in your browser with HTTP://[terraform output: "util_private_dns"]:8080/
 
-(default login is admin:admin)
+//everything from here down is broken until playbooks are complete
+7. Connect to Ambari in your browser with:
+ 
+HTTP://[terraform output: "util_private_dns"]:8080/    #(default login is admin:admin)
 
 8. Launch the installation wizard (click the button, follow the steps); OR
 
