@@ -48,9 +48,9 @@ resource "aws_instance" "utility" {
     "sudo yum install epel-release-latest-7.noarch.rpm -y",
     "sudo yum update -y",
     "sudo yum install ansible -y",
-    "sudo su - -c 'echo [utility] > /etc/ansible/hosts'",
+    "sudo su - -c 'echo \"[utility]\" > /etc/ansible/hosts'",
     "sudo su - -c 'echo ${aws_instance.utility.private_dns} >> /etc/ansible/hosts'",
-    "sudo su - -c 'echo ${template_file.cluster_hosts.rendered} >> /etc/ansible/hosts'",
+    "sudo su - -c 'echo \"${template_file.cluster_hosts.rendered}\" >> /etc/ansible/hosts'",
     "export ANSIBLE_HOST_KEY_CHECKING=False",
     "ansible --private-key=~/.ssh/mykey all -m ping",
     "sudo rm -f epel-release-latest-7.noarch.rpm"
