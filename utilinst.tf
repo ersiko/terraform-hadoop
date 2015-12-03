@@ -50,6 +50,7 @@ resource "aws_instance" "utility" {
     "sudo yum install ansible -y",
     "sudo su - -c 'echo [utility] > /etc/ansible/hosts'",
     "sudo su - -c 'echo ${aws_instance.utility.private_dns} >> /etc/ansible/hosts'",
+    "sudo su - -c 'echo ${template_file.cluster_hosts.rendered} >> /etc/ansible/hosts'",
     "export ANSIBLE_HOST_KEY_CHECKING=False",
     "ansible --private-key=~/.ssh/mykey all -m ping",
     "sudo rm -f epel-release-latest-7.noarch.rpm"
@@ -63,11 +64,8 @@ resource "aws_instance" "utility" {
 }
 
 /* output the instance addresses */
-output "util_public_dns" {
+output "utility_public_dns" {
   value = "${aws_instance.utility.public_dns}"
-}
-output "util_private_dns" {
-  value = "${aws_instance.utility.private_dns}"
 }
 
 /* create the utility tier security group */

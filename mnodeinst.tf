@@ -49,8 +49,3 @@ resource "aws_instance" "mnode" {
 */
 
 }
-
-/* output the instance address */
-output "mnode_private_dns" {
-  value = "${join(",", aws_instance.mnode.*.private_dns)}"
-}

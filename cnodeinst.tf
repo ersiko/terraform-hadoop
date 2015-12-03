@@ -50,11 +50,6 @@ resource "aws_instance" "cnode" {
 
 }
 
-/* output the instance address */
-output "cnode_private_dns" {
-  value = "${join(",", aws_instance.cnode.*.private_dns)}"
-}
-
 /* create the cluster tier security group */
 resource "aws_security_group" "sg_cluster_access" {
   name = "sg_cluster_access"

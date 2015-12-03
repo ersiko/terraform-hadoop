@@ -1,9 +1,7 @@
-[utility]
-${aws_instance.utility.private_dns}
 
 [cnodes]
-${join("\n", aws_instance.cnode.*.private_dns)}
+${cnode_addresses}
 
 [mnodes]
-${join("\n", aws_instance.mnode.*.private_dns)}
+${mnode_addresses}
 
