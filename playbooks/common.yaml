@@ -1,0 +1,20 @@
+---
+# Run some tasks to install dependencies
+- hosts: all
+  remote_user: centos
+  sudo: yes
+  tasks:
+  - name: install dependency packages (RedHat)
+    yum: name={{ item }} state=present
+    when: ansible_os_family == 'RedHat'
+    with_items:
+      - zip
+      - unzip
+      - wget
+      - sysstat
+      - ntp
+      - telnet
+  - name: configure ntp (Redhat)
+    service: name=ntpd enabled=yes state=restarted
+    when: ansible_os_family == 'RedHat'    
+

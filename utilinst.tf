@@ -40,20 +40,29 @@ resource "aws_instance" "utility" {
     }
   }
 
+  /* copy up the common playbook for ansible */
+  provisioner "file" {
+    source = "playbooks/common.yaml"
+    destination = "/home/centos/common.yaml"
+    connection {
+      type = "ssh"
+      user = "centos"
+      key_file = "${var.keyfile}"
+    }
+  }
+
   provisioner "remote-exec" {
     inline = [
     "chmod 600 /home/centos/.ssh/mykey",
-    "sudo yum install wget zip unzip telnet -y",
-    "sudo wget -nv https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm",
-    "sudo yum install epel-release-latest-7.noarch.rpm -y",
+    "sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y",
     "sudo yum update -y",
     "sudo yum install ansible -y",
     "sudo su - -c 'echo \"[utility]\" > /etc/ansible/hosts'",
-    "sudo su - -c 'echo ${aws_instance.utility.private_dns} >> /etc/ansible/hosts'",
+    "sudo su - -c 'echo -e ${aws_instance.utility.private_dns}\n >> /etc/ansible/hosts'",
     "sudo su - -c 'echo \"${template_file.cluster_hosts.rendered}\" >> /etc/ansible/hosts'",
     "export ANSIBLE_HOST_KEY_CHECKING=False",
     "ansible --private-key=~/.ssh/mykey all -m ping",
-    "sudo rm -f epel-release-latest-7.noarch.rpm"
+    "ansible-playbook --private-key=~/.ssh/mykey common.yaml"
     ]
     connection {
       type = "ssh"
