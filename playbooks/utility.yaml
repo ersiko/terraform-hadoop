@@ -1,0 +1,17 @@
+---
+# configure the utility host
+- include: common.yaml
+- hosts: utility
+  vars:
+   var_remote_user: centos
+   var_sudo: yes
+  remote_user: "{{ var_remote_user }}"
+  sudo: "{{ var_sudo }}"
+  tasks:
+  - name: install EPEL yum repo (RedHat)
+    when: ansible_os_family == 'RedHat'
+    yum: name=http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+  - name: install ansible (RedHat)
+    when: ansible_os_family == 'RedHat'
+    yum: name=ansible state=present
+
