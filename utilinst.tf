@@ -51,6 +51,17 @@ resource "aws_instance" "utility" {
     }
   }
 
+  /* copy up the common playbook for ansible */
+  provisioner "file" {
+    source = "playbooks/utility.yaml"
+    destination = "/home/centos/utility.yaml"
+    connection {
+      type = "ssh"
+      user = "centos"
+      key_file = "${var.keyfile}"
+    }
+  }
+
   provisioner "remote-exec" {
     inline = [
     "chmod 600 /home/centos/.ssh/mykey",
