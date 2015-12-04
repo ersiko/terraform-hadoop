@@ -1,8 +1,11 @@
 ---
 # Run some tasks to install dependencies
 - hosts: all
-  remote_user: centos
-  sudo: yes
+  vars:
+   var_remote_user: centos
+   var_sudo: yes
+  remote_user: "{{ var_remote_user }}"
+  sudo: "{{ var_sudo }}"
   tasks:
   - name: install dependency packages (RedHat)
     yum: name={{ item }} state=present

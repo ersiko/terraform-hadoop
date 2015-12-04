@@ -40,8 +40,8 @@ variable "azones" {
 
 variable "count" {
   default = {
-    "cnodes" = "1"
-    "mnodes" = "1"
+    "cnodes" = "0"
+    "mnodes" = "0"
   }
 }
 
