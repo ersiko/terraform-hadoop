@@ -19,7 +19,7 @@
       - telnet
   - name: fetch java rpm (Redhat)
     when: ansible_os_family == 'RedHat'
-    command:  wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jre-8u65-linux-x64.rpm
+    command: 'wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jre-8u65-linux-x64.rpm'
   - name: install java runtime environment (RedHat)
     when: ansible_os_family == 'RedHat'
     yum: name=jre-8u65-linux-x64.rpm state=present
