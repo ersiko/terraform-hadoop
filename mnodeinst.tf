@@ -28,24 +28,4 @@ resource "aws_instance" "mnode" {
 
   # cluster size
   count = "${var.count.mnodes}"
-
-/* saving this setup detail for later
-
-  provisioner "remote-exec" {
-    inline = [
-    "sudo yum install zip unzip wget telnet -y",
-    "sudo wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo",
-    "sudo yum install ambali-agent -y",
-    "sudo sed -i s/hostname=localhost/hostname=${aws_instance.utility.private_dns}/ /etc/ambari-agent/conf/ambari-agent.ini",
-    "sudo ambari-agent start",
-    "sudo /tmp/userswitch.sh"
-    ]
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
-*/
-
 }

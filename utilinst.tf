@@ -40,7 +40,7 @@ resource "aws_instance" "utility" {
     }
   }
 
-  /* copy up the common playbook for ansible */
+  /* copy up the playbooks */
   provisioner "file" {
     source = "playbooks/common.yaml"
     destination = "/home/centos/common.yaml"
@@ -74,7 +74,7 @@ resource "aws_instance" "utility" {
     "sudo su - -c 'echo \"${template_file.cluster_hosts.rendered}\" >> /etc/ansible/hosts'",
     "export ANSIBLE_HOST_KEY_CHECKING=False",
     "ansible --private-key=~/.ssh/mykey all -m ping",
-    "ansible-playbook --private-key=~/.ssh/mykey common.yaml"
+    "ansible-playbook --private-key=~/.ssh/mykey utility.yaml"
     ]
     connection {
       type = "ssh"

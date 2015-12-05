@@ -1,29 +1,21 @@
 ---
 # Run some tasks to install dependencies
+- include: base.yaml
 - hosts: all
   vars:
    var_remote_user: centos
    var_sudo: yes
+   var_java_ver: 7u45
+   var_java_build: b18
   remote_user: "{{ var_remote_user }}"
   sudo: "{{ var_sudo }}"
   tasks:
-  - name: install dependency packages (RedHat)
-    when: ansible_os_family == 'RedHat'
-    yum: name={{ item }} state=present
-    with_items:
-      - zip
-      - unzip
-      - wget
-      - sysstat
-      - ntp
-      - telnet
   - name: fetch java rpm (Redhat)
     when: ansible_os_family == 'RedHat'
-    command: 'wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jre-8u65-linux-x64.rpm'
+    command: 'wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/{{ var_java_ver }}-{{ var_java_build }}/jre-{{ var_java_ver }}-linux-x64.rpm'
   - name: install java runtime environment (RedHat)
     when: ansible_os_family == 'RedHat'
-    yum: name=jre-8u65-linux-x64.rpm state=present
-  - name: configure ntp (Redhat)
+    yum: name=jre-{{ var_java_ver }}-linux-x64.rpm state=present
+  - name: fetch the Ambari yum repo (RedHat)
     when: ansible_os_family == 'RedHat'
-    service: name=ntpd enabled=yes state=restarted
-
+    command: 'wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo'

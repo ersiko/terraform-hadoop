@@ -1,0 +1,13 @@
+---
+# configure the cnode hosts
+- include: cnodes.yaml
+- hosts: mnodes
+  vars:
+   var_remote_user: centos
+   var_sudo: yes
+  remote_user: "{{ var_remote_user }}"
+  sudo: "{{ var_sudo }}"
+  tasks:
+  - name: install the MySQL community repository (RedHat)
+    when: ansible_os_family == 'RedHat'
+    yum: name= http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm state=present

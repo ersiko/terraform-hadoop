@@ -14,4 +14,9 @@
   - name: install ansible (RedHat)
     when: ansible_os_family == 'RedHat'
     yum: name=ansible state=present
-
+  - name: install the ambari server
+    yum: name=ambari-server state=present
+  - name: configure the ambari server
+    command: ambari-server setup -j /usr/java/default -s
+  - name: start the ambari server
+    command: nohup /etc/init.d/ambari-server start
