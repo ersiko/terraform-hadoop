@@ -48,16 +48,14 @@ resource "aws_instance" "utility" {
   provisioner "remote-exec" {
     inline = [
     "chmod 600 /home/centos/.ssh/mykey",
-    "sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y",
+    "sudo yum install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y",
     "sudo yum update -y",
     "sudo yum install ansible -y",
     "echo \"[utility]\" > ansiblehosts.txt",
     "echo ${aws_instance.utility.private_dns} >> ansiblehosts.txt",
-    "echo \"\" >> ansiblehosts.txt'",
+    "echo \"\" >> ansiblehosts.txt",
     "echo \"${template_file.cluster_hosts.rendered}\" >> ansiblehosts.txt",
-    "echo ${aws_instance.utility.private_dns} > ambariserver.txt",
-    "export ANSIBLE_HOST_KEY_CHECKING=False",
-    "ansible --private-key=~/.ssh/mykey all -m ping",
+    "echo ${aws_instance.utility.private_dns} > ambariserver.txt"
     ]
     connection {
       type = "ssh"
