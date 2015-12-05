@@ -1,0 +1,4 @@
+# run all the plays to configure the cluster
+- include: cnode.yaml
+- include: mnode.yaml
+#- include: blueprint.yaml
