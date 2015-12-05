@@ -1,5 +1,5 @@
 ---
-# Run some tasks to install dependencies
+# Run some tasks to configure Hadoop dependencies
 - include: base.yaml
 - hosts: all
   vars:
@@ -10,12 +10,19 @@
   remote_user: "{{ var_remote_user }}"
   sudo: "{{ var_sudo }}"
   tasks:
+  - name: disable hugepages (Redhat, 1/2)
+    when: ansible_os_family == 'RedHat'
+    shell: 'echo never > /sys/kernel/mm/transparent_hugepage/enabled'
+  - name: disable transparent hugepages (RedHat, 2/2)
+    when: ansible_os_family == 'RedHat'
+    shell: 'echo never > /sys/kernel/mm/transparent_hugepage/defrag'
+  - name: configure selinux
+    selinux: state=disabled
+  - name: configure filehandles
+    sysctl: name=fs.file-max value=12288 
   - name: fetch java rpm (Redhat)
     when: ansible_os_family == 'RedHat'
     command: 'wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/{{ var_java_ver }}-{{ var_java_build }}/jre-{{ var_java_ver }}-linux-x64.rpm'
   - name: install java runtime environment (RedHat)
     when: ansible_os_family == 'RedHat'
     yum: name=jre-{{ var_java_ver }}-linux-x64.rpm state=present
-  - name: fetch the Ambari yum repo (RedHat)
-    when: ansible_os_family == 'RedHat'
-    command: 'wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo'

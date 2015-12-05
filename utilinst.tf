@@ -40,26 +40,9 @@ resource "aws_instance" "utility" {
     }
   }
 
-  /* copy up the playbooks */
-  provisioner "file" {
-    source = "playbooks/common.yaml"
-    destination = "/home/centos/common.yaml"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
-
-  /* copy up the common playbook for ansible */
-  provisioner "file" {
-    source = "playbooks/utility.yaml"
-    destination = "/home/centos/utility.yaml"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
+  /* scp the playbooks, since one at a time is too clumsy */
+  provisioner "local-exec" {
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/*.yaml centos@${aws_instance.utility.public_dns}:/home/centos/"
   }
 
   provisioner "remote-exec" {
@@ -72,6 +55,7 @@ resource "aws_instance" "utility" {
     "sudo su - -c 'echo ${aws_instance.utility.private_dns} >> /etc/ansible/hosts'",
     "sudo su - -c 'echo \"\" >> /etc/ansible/hosts'",
     "sudo su - -c 'echo \"${template_file.cluster_hosts.rendered}\" >> /etc/ansible/hosts'",
+    "echo ${aws_instance.utility.private_dns} > /home/centos/ambariserver.txt",
     "export ANSIBLE_HOST_KEY_CHECKING=False",
     "ansible --private-key=~/.ssh/mykey all -m ping",
     "ansible-playbook --private-key=~/.ssh/mykey utility.yaml"
@@ -87,37 +71,4 @@ resource "aws_instance" "utility" {
 /* output the instance addresses */
 output "utility_public_dns" {
   value = "${aws_instance.utility.public_dns}"
-}
-
-/* create the utility tier security group */
-resource "aws_security_group" "sg_utility_access" {
-  name = "sg_utility_access"
-  description = "Allow inbound access to the utility tier"
-  
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
- 
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-/* create a second group for cluster back-connections */
-resource "aws_security_group" "sg_clus_util_access" {
-  name = "sg_clus_util_access"
-  description = "Allow new connections from the cluster"
-
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    security_groups = ["${aws_security_group.sg_cluster_access.id}"]
-  }
 }
