@@ -2,7 +2,7 @@
 # Run some tasks to install dependencies
 - name: install dependency packages (RedHat)
   when: ansible_os_family == 'RedHat'
-  yum: name={{ item }} state=present
+  yum: name={{ item }} state=latest
   with_items:
     - zip
     - unzip

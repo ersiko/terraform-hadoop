@@ -15,12 +15,12 @@
     yum: name=http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
   - name: install ansible (RedHat)
     when: ansible_os_family == 'RedHat'
-    yum: name=ansible state=present
+    yum: name=ansible state=latest
   - name: fetch the Ambari yum repo (RedHat)
     when: ansible_os_family == 'RedHat'
     command: 'wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo'
   - name: install the ambari server
-    yum: name=ambari-server state=present
+    yum: name=ambari-server state=latest
   - name: configure the ambari server
     command: ambari-server setup -j /usr/java/default -s
   - name: start the ambari server

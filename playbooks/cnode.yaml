@@ -16,7 +16,7 @@
     command: 'wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo'
   - name: install the ambari agent (RedHat)
     when: ansible_os_family == 'RedHat'
-    yum: name=ambari-agent state=present
+    yum: name=ambari-agent state=latest
   - name: configure the ambari agent
     command: 'sed -i s/hostname=localhost/hostname={{ var_ambari_server }}/ /etc/ambari-agent/conf/ambari-agent.ini'
   - name: start the ambari agent

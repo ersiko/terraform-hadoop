@@ -1,7 +1,8 @@
 ---
 # Run some tasks to configure Hadoop dependencies
+# requires var_java_ver and var_java_build to be defined
 - include: base.yaml
-- name: disable hugepages (Redhat, 1/2)
+- name: disable transparent hugepages (Redhat, 1/2)
   when: ansible_os_family == 'RedHat'
   shell: 'echo never > /sys/kernel/mm/transparent_hugepage/enabled'
 - name: disable transparent hugepages (RedHat, 2/2)
