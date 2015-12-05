@@ -1,14 +1,16 @@
 ---
 # configure the cnode hosts 
-- include: common.yaml
 - hosts: cnodes
   vars:
    var_remote_user: centos
    var_sudo: yes
-   var_ambari_server: {{ lookup('file', '/home/centos/ambariserver.txt') }}
+   var_java_ver: 7u45
+   var_java_build: b18
+   var_ambari_server: "{{ lookup('file', '/home/centos/ambariserver.txt') }}"
   remote_user: "{{ var_remote_user }}"
   sudo: "{{ var_sudo }}"
   tasks:
+  - include: common.yaml
   - name: fetch the Ambari yum repo (RedHat)
     when: ansible_os_family == 'RedHat'
     command: 'wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo'

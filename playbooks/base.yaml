@@ -1,22 +1,15 @@
 ---
 # Run some tasks to install dependencies
-- hosts: all
-  vars:
-   var_remote_user: centos
-   var_sudo: yes
-  remote_user: "{{ var_remote_user }}"
-  sudo: "{{ var_sudo }}"
-  tasks:
-  - name: install dependency packages (RedHat)
-    when: ansible_os_family == 'RedHat'
-    yum: name={{ item }} state=present
-    with_items:
-      - zip
-      - unzip
-      - wget
-      - sysstat
-      - ntp
-      - telnet
-  - name: configure ntp (Redhat)
-    when: ansible_os_family == 'RedHat'
-    service: name=ntpd enabled=yes state=restarted
+- name: install dependency packages (RedHat)
+  when: ansible_os_family == 'RedHat'
+  yum: name={{ item }} state=present
+  with_items:
+    - zip
+    - unzip
+    - wget
+    - sysstat
+    - ntp
+    - telnet
+- name: configure ntp (Redhat)
+  when: ansible_os_family == 'RedHat'
+  service: name=ntpd enabled=yes state=restarted
