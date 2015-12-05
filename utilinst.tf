@@ -42,7 +42,7 @@ resource "aws_instance" "utility" {
 
   /* scp the playbooks, since one at a time is too clumsy */
   provisioner "local-exec" {
-    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/*.yaml centos@${aws_instance.utility.public_dns}:/home/centos/"
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/*.yaml centos@${aws_instance.utility.public_dns}:."
   }
 
   provisioner "remote-exec" {
@@ -51,14 +51,13 @@ resource "aws_instance" "utility" {
     "sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y",
     "sudo yum update -y",
     "sudo yum install ansible -y",
-    "sudo su - -c 'echo \"[utility]\" > /etc/ansible/hosts'",
-    "sudo su - -c 'echo ${aws_instance.utility.private_dns} >> /etc/ansible/hosts'",
-    "sudo su - -c 'echo \"\" >> /etc/ansible/hosts'",
-    "sudo su - -c 'echo \"${template_file.cluster_hosts.rendered}\" >> /etc/ansible/hosts'",
-    "echo ${aws_instance.utility.private_dns} > /home/centos/ambariserver.txt",
+    "echo \"[utility]\" > ansiblehosts.txt",
+    "echo ${aws_instance.utility.private_dns} >> ansiblehosts.txt",
+    "echo \"\" >> ansiblehosts.txt'",
+    "echo \"${template_file.cluster_hosts.rendered}\" >> ansiblehosts.txt",
+    "echo ${aws_instance.utility.private_dns} > ambariserver.txt",
     "export ANSIBLE_HOST_KEY_CHECKING=False",
     "ansible --private-key=~/.ssh/mykey all -m ping",
-    "ansible-playbook --private-key=~/.ssh/mykey utility.yaml"
     ]
     connection {
       type = "ssh"
