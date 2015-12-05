@@ -1,0 +1,14 @@
+---
+# stop all the ambari agents
+- hosts: cnodes
+  tasks:
+  - name: stop the ambari agent (cnodes)
+    command: ambari-agent stop
+- hosts: mnodes
+  tasks:
+  - name: stop the ambari agent (mnodes)
+    command: ambari-agent stop
+- hosts: utility
+  tasks:
+  - name: stop the ambari server (utility)
+    command: ambari-server stop

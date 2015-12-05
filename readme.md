@@ -1,8 +1,12 @@
 Hadoop cluster terraform templates and Ansible playbooks for Ambari / Hortonworks configuration.
 
-Specify most cluster configuration variables in "variables.tf". So far only tested with CentOS 7 and Ambari. Java version and build are configurable from within each playbook (cnodes.yaml, mnodes.yaml and utility.yaml files).
+Specify most cluster configuration variables in "variables.tf".
 
-Ansible host inventory and ambari server are automatically generated from template (see 'files.tf') and copied to the utility host for reference by playbook variable lookup. If changes are made to the cluster, it's critical to either re-launch the utility host and then re-run the site playbook, or update the ansiblehosts.txt manually and then re-run the site playbook.
+So far only tested with CentOS 7 and Ambari.
+
+Java version and build are configurable from within each playbook (cnodes.yaml, mnodes.yaml and utility.yaml files in playbooks/).
+
+Ansible host inventory and ambari server are automatically generated from terraform output and copied to the utility host for reference. If changes are made to the cluster, it's critical stop all ambari agents and to either re-launch the utility host and then re-run the site playbook, or update the ansiblehosts.txt manually and then re-run the site playbook.
 
 A successful build should result in two addresses output. The public address should be used to connect your ssh proxy below, and the internal address to connect to your cluster on port 8080.
 
