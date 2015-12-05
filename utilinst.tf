@@ -55,6 +55,7 @@ resource "aws_instance" "utility" {
     "echo ${aws_instance.utility.private_dns} >> ansiblehosts.txt",
     "echo \"\" >> ansiblehosts.txt",
     "echo \"${template_file.cluster_hosts.rendered}\" >> ansiblehosts.txt",
+    "sudo su -c 'cat ansiblehosts.txt > /etc/ansible/hosts'",
     "echo ${aws_instance.utility.private_dns} > ambariserver.txt"
     ]
     connection {
@@ -66,6 +67,9 @@ resource "aws_instance" "utility" {
 }
 
 /* output the instance addresses */
+output "utility_private_address" {
+  value = "${aws_instance.utility.private_dns}"
+}
 output "utility_public_dns" {
   value = "${aws_instance.utility.public_dns}"
 }
