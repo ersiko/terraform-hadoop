@@ -6,7 +6,7 @@
    var_sudo: yes
    var_java_ver: 7u45
    var_java_build: b18
-   var_ambari_server: "{{ lookup('file', '/home/centos/ambariserver.txt') }}"
+   var_ambari_server: "{{ lookup('file', 'ambariserver.txt') }}"
   remote_user: "{{ var_remote_user }}"
   sudo: "{{ var_sudo }}"
   tasks:
