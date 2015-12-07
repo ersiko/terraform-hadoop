@@ -45,6 +45,12 @@ resource "aws_instance" "utility" {
     command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/*.yaml centos@${aws_instance.utility.public_dns}:."
   }
 
+  /* scp the blueprint and hostmap template, for cluster configuration */
+  provisioner "local-exec" {
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no blueprints/*.json centos@${aws_instance.utility.public_dns}:."
+  }
+
+  /* remote setup of ansible  and investory file */
   provisioner "remote-exec" {
     inline = [
     "chmod 600 /home/centos/.ssh/mykey",
