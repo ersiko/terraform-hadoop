@@ -18,8 +18,8 @@ variable "region" {
 variable "insttype" {
   default = {
     "utility" = "t2.micro"
-    "cnode" = "t2.micro"
-    "mnode" = "t2.micro"
+    "cnode" = "t2.medium"
+    "mnode" = "t2.medium"
   }
 }
 
