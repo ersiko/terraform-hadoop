@@ -1,0 +1,7 @@
+- uri:
+  url: http://{{ lookup('file', 'ambariserver.txt') }}:8080/v1/api/hosts
+  method: GET
+  user: admin
+  password: admin
+  force_basic_auth: yes
+  return_content: yes
