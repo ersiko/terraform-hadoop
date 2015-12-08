@@ -1,9 +1,17 @@
 ---
 - hosts: utility
+  vars:
+    var_ambari_user: admin
+    var_ambari_password: admin
   tasks:
-  # authenticate
-  - action: "uri url=http://{{ lookup('file', 'ambariserver.txt') }}:8080/ method=GET return_content=yes user=admin password=admin force_basic_auth=yes"
   # list registered cluster hosts
-  - action: "uri url=http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/hosts method=GET user=admin password=admin force_basic_auth=yes return_content=yes"
-    register: response
-  - debug: msg="{{  (response|from_json) }}"
+  - uri:
+      url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/hosts"
+      method: GET
+      HEADER_Content-Type: application/json
+      return_content: yes
+      user: "{{ var_ambari_user }}"
+      password: "{{ var_ambari_password }}" 
+      force_basic_auth: yes
+    register: resp_hosts
+  - debug: msg="{{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }}"
