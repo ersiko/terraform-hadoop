@@ -14,4 +14,4 @@
       password: "{{ var_ambari_password }}" 
       force_basic_auth: yes
     register: resp_hosts
-  - debug: msg="{{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }}"
+  - shell: echo {{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }} >> hosts.out #make this a loop
