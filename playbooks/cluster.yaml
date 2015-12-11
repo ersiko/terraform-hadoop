@@ -14,4 +14,12 @@
       password: "{{ var_ambari_password }}" 
       force_basic_auth: yes
     register: resp_hosts
-  - shell: echo {{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }} >> hosts.out #make this a loop
+  - name: remove hosts.out if it exists
+    file: path=/tmp/hosts.out state=absent
+  - name: generate cluster host count and sequence for array processing
+    shell: echo {{ (resp_hosts.content|from_json)['items']|length }}
+    register: var_clus_host_count
+  - name: write the registered cluster hosts to file
+    shell: echo {{ (resp_hosts.content|from_json)['items'].{{ item }}['Hosts']['host_name'] }} >> /tmp/hosts.out
+#   shell: echo {{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }} >> /tmp/hosts.out
+    with_sequence: start=0 end=5 stride=1
