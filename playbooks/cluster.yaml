@@ -20,6 +20,4 @@
     shell: echo {{ (resp_hosts.content|from_json)['items']|length }}
     register: var_clus_host_count
   - name: write the registered cluster hosts to file
-    shell: echo {{ (resp_hosts.content|from_json)['items'].{{ item }}['Hosts']['host_name'] }} >> /tmp/hosts.out
-#   shell: echo {{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }} >> /tmp/hosts.out
-    with_sequence: start=0 end=5 stride=1
+    template: src=hostmap.tpl dest=hostmap.json
