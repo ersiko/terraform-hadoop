@@ -1,0 +1,25 @@
+{
+  "blueprint" : "testclus",
+  "default_password" : "admin",
+  "host_groups" :[
+    { 
+      "name":"client_host_group",
+      "hosts":[
+        {"fqdn":""},
+        {"fqdn":""},
+        {"fqdn":""}]
+    },
+    {
+      "name":"nn_host_group",
+      "hosts":[{"fqdn":""}]
+    },
+    {
+      "name":"hive_host_group",
+      "hosts":[{"fqdn":""}]
+    },
+    {
+      "name":"rm_host_group",
+      "hosts":[{"fqdn":""}]
+    }
+  ]
+}
