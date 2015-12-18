@@ -7,7 +7,7 @@
       "hosts":[
         {"fqdn":"{{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }}"},
         {"fqdn":"{{ (resp_hosts.content|from_json)['items'].1['Hosts']['host_name'] }}"},
-        {"fqdn":"{{ (resp_hosts.content|from_json)['items'].2['Hosts']['host_name'] }}"},
+        {"fqdn":"{{ (resp_hosts.content|from_json)['items'].2['Hosts']['host_name'] }}"}]
     },
     {
       "name":"nn_host_group",
