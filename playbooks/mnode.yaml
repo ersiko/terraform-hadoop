@@ -21,6 +21,6 @@
     when: ansible_os_family == 'RedHat'
     yum: name=ambari-agent state=latest
   - name: configure the ambari agent
-    command: 'sed -i s/hostname=localhost/hostname={{ var_ambari_server }}/ /etc/ambari-agent/conf/ambari-agent.ini'
+    command: 'sed -i s/hostname=.*/hostname={{ var_ambari_server }}/ /etc/ambari-agent/conf/ambari-agent.ini'
   - name: start the ambari agent
     command: 'ambari-agent start'
