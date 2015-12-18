@@ -2,4 +2,4 @@
 - include: utility.yaml
 - include: cnode.yaml
 - include: mnode.yaml
-#- include: blueprint.yaml
+#- include: cluster.yaml
