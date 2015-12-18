@@ -8,6 +8,7 @@
   - uri:
       url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/hosts"
       method: GET
+      HEADER_X-Requested_by: Pythian
       HEADER_Content-Type: application/json
       return_content: yes
       user: "{{ var_ambari_user }}"
@@ -16,22 +17,31 @@
     register: resp_hosts
   - name: remove hosts.out if it exists
     file: path=/tmp/hosts.out state=absent
-  - name: generate cluster host count and sequence for array processing
-    shell: echo {{ (resp_hosts.content|from_json)['items']|length }}
-    register: var_clus_host_count
   - name: write the registered cluster hosts to file
     template: src=~/hostmap.tpl dest=~/hostmap.json
-# this is the properly constructed uri action, doesn't work due to a bug/feature
-#  - uri:
-#      url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/blueprints/testclus" #need to post the testclus.json file
-#      method: POST
-#      user: "{{ var_ambari_user }}"
-#      password: "{{ var_ambari_password }}"
-#      force_basic_auth: yes
-#      body_format: json
-#      body: "{{ lookup('file', '~/testclus.json') }}"
-# using a curl command instead
-  - name: post the blueprint
-    command: 'curl -H "X-Requested-By: Pythian" -X POST -u "{{ var_ambari_user }}":"{{ var_ambari_password }}" http://"{{ lookup("file", "ambariserver.txt") }}":8080/api/v1/blueprints/testclus -d @testclus.json'
-  - name: post the hostmap
-    command: 'curl -H "X-Requested-By: Pythian" -X POST -u "{{ var_ambari_user }}":"{{ var_ambari_password }}" http://"{{ lookup("file", "ambariserver.txt") }}":8080/api/v1/clusters/testclus -d @hostmap.json'
+#
+# IMPORTANT NOTE: https://github.com/ansible/ansible-modules-core/pull/1011
+# REQUIRES A SPACE IN FRONT OF THE "lookup()" function in the "body:" VALUE OF THE URI MODULE - DON'T REMOVE THE SPACES!
+#
+  # post the blueprint and hostmap to initiate cluster build
+  - uri:
+      url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/blueprints/testclus"
+      method: POST
+      HEADER_X-Requested-By: Pythian
+      HEADER_Content-Type: application/json
+      user: "{{ var_ambari_user }}"
+      password: "{{ var_ambari_password }}"
+      force_basic_auth: yes
+      body_format: json
+      body: " {{ lookup('file', '~/testclus.json') }}"
+  - uri:
+      url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/clusters/testclus"
+      method: POST
+      HEADER_X-Requested-By: Pythian
+      HEADER_Content-Type: application/json
+      user: "{{ var_ambari_user }}"
+      password: "{{ var_ambari_password }}"
+      force_basic_auth: yes
+      body_format: json
+      body: " {{ lookup('file', '~/testclus.json') }}"
+
