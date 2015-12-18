@@ -28,7 +28,7 @@
       url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/blueprints/testclus"
       method: POST
       HEADER_X-Requested-By: Pythian
-      HEADER_Content-Type: application/json
+      status_code: 201, 409
       user: "{{ var_ambari_user }}"
       password: "{{ var_ambari_password }}"
       force_basic_auth: yes
@@ -38,10 +38,9 @@
       url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/clusters/testclus"
       method: POST
       HEADER_X-Requested-By: Pythian
-      HEADER_Content-Type: application/json
+      status_code: 202, 500 
       user: "{{ var_ambari_user }}"
       password: "{{ var_ambari_password }}"
       force_basic_auth: yes
       body_format: json
-      body: " {{ lookup('file', '~/testclus.json') }}"
-
+      body: " {{ lookup('file', '~/hostmap.json') }}"
