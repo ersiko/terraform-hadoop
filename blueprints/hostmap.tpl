@@ -1,25 +1,32 @@
 {
   "blueprint" : "testclus",
-  "default_password" : "admin",
+  "default_password" : "{{ var_ambari_password }}",
   "host_groups" :[
     { 
       "name":"client_host_group",
       "hosts":[
-        {"fqdn":"{{ (resp_hosts.content|from_json)['items'].0['Hosts']['host_name'] }}"},
-        {"fqdn":"{{ (resp_hosts.content|from_json)['items'].1['Hosts']['host_name'] }}"},
-        {"fqdn":"{{ (resp_hosts.content|from_json)['items'].2['Hosts']['host_name'] }}"}]
-    },
+{% for host in (resp_hosts.content|from_json)['items'] %}
+{% if loop.index == loop.length %}
     {
       "name":"nn_host_group",
-      "hosts":[{"fqdn":"{{ (resp_hosts.content|from_json)['items'].3['Hosts']['host_name'] }}"}]
-    },
+      "hosts":[{"fqdn":"{{ (host)['Hosts']['host_name'] }}"}]
+    }
+{% elif loop.index == loop.length -1 %}
     {
       "name":"hive_host_group",
-      "hosts":[{"fqdn":"{{ (resp_hosts.content|from_json)['items'].4['Hosts']['host_name'] }}"}]
+      "hosts":[{"fqdn":"{{ (host)['Hosts']['host_name'] }}"}]
     },
+{% elif loop.index == loop.length -2 %}
     {
       "name":"rm_host_group",
-      "hosts":[{"fqdn":"{{ (resp_hosts.content|from_json)['items'].5['Hosts']['host_name'] }}"}]
-    }
+      "hosts":[{"fqdn":"{{ (host)['Hosts']['host_name'] }}"}]
+    },
+{% elif loop.index == loop.length -3 %}
+      {"fqdn":"{{ (host)['Hosts']['host_name'] }}"}]
+    },
+{% elif loop.index < loop.length -3 %}
+      {"fqdn":"{{ (host)['Hosts']['host_name'] }}"},
+{% endif %}
+{% endfor %}
   ]
 }
