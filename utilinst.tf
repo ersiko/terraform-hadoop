@@ -42,12 +42,12 @@ resource "aws_instance" "utility" {
 
   /* scp the playbooks, since one at a time is too clumsy */
   provisioner "local-exec" {
-    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/*.yaml centos@${aws_instance.utility.public_dns}:."
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/* centos@${aws_instance.utility.public_dns}:."
   }
 
   /* scp the blueprint and hostmap template, for cluster configuration */
   provisioner "local-exec" {
-    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no blueprints/*.json centos@${aws_instance.utility.public_dns}:."
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no blueprints/* centos@${aws_instance.utility.public_dns}:."
   }
 
   /* remote setup of ansible  and investory file */

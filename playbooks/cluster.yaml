@@ -11,7 +11,7 @@
       HEADER_Content-Type: application/json
       return_content: yes
       user: "{{ var_ambari_user }}"
-      password: "{{ var_ambari_password }}" 
+      password: "{{ var_ambari_password }}"
       force_basic_auth: yes
     register: resp_hosts
   - name: remove hosts.out if it exists
@@ -20,4 +20,13 @@
     shell: echo {{ (resp_hosts.content|from_json)['items']|length }}
     register: var_clus_host_count
   - name: write the registered cluster hosts to file
-    template: src=hostmap.tpl dest=hostmap.json
+    template: src=~/hostmap.tpl dest=~/hostmap.json
+#  - uri:
+#      url: "http://{{ lookup('file', 'ambariserver.txt') }}:8080/api/v1/blueprints/testclus" #need to post the testclus.json file
+#      method: POST
+#      HEADER_Content-Type: application/json
+#      return_content: yes
+#      user: "{{ var_ambari_user }}"
+#      password: "{{ var_ambari_password }}"
+#      force_basic_auth: yes
+
