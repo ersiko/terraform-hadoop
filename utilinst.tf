@@ -15,9 +15,6 @@ resource "aws_instance" "utility" {
     delete_on_termination = true
   }
 
-  /* provide S3 access to the system */
-  iam_instance_profile = "S3FullAccess"
-
   /* add to the security groups */
   vpc_security_group_ids = ["${aws_security_group.sg_utility_access.id}", "${aws_security_group.sg_clus_util_access.id}"]
 
@@ -50,7 +47,7 @@ resource "aws_instance" "utility" {
     command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no blueprints/* centos@${aws_instance.utility.public_dns}:."
   }
 
-  /* remote setup of ansible  and investory file */
+  /* remote setup of ansible  and inventory file */
   provisioner "remote-exec" {
     inline = [
     "chmod 600 /home/centos/.ssh/mykey",
