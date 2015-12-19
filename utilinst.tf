@@ -8,15 +8,12 @@ resource "aws_instance" "utility" {
 
   /* select the appropriate AMI */
   ami = "${lookup(var.ami, var.region.primary)}"
-  instance_type = "t2.micro"
+  instance_type = "${var.insttype.utility}"
 
   /* delete the volume on termination */
   root_block_device {
     delete_on_termination = true
   }
-
-  /* provide S3 access to the system */
-  iam_instance_profile = "S3FullAccess"
 
   /* add to the security groups */
   vpc_security_group_ids = ["${aws_security_group.sg_utility_access.id}", "${aws_security_group.sg_clus_util_access.id}"]
@@ -27,32 +24,42 @@ resource "aws_instance" "utility" {
     Tier = "utility"
   }
 
-  /* trying out a provisioner setup */
+  /* provisioners for Ansible setup */
 
-  /* copy up and execute the user data script */
+  /* copy up private keyfile for ansible to use */
   provisioner "file" {
-    source = "scripts/util_bootstrap.sh"
-    destination = "/tmp/bootstrap.sh"
+    source = "${var.keyfile}"
+    destination = "/home/centos/.ssh/mykey"
     connection {
       type = "ssh"
       user = "centos"
       key_file = "${var.keyfile}"
     }
   }
-  provisioner "file" {
-    source = "scripts/userswitch.sh"
-    destination = "/tmp/userswitch.sh"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
+
+  /* scp the playbooks, since one at a time is too clumsy */
+  provisioner "local-exec" {
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no playbooks/* centos@${aws_instance.utility.public_dns}:."
   }
+
+  /* scp the blueprint and hostmap template, for cluster configuration */
+  provisioner "local-exec" {
+    command = "scp -i ${var.keyfile} -oStrictHostKeyChecking=no blueprints/* centos@${aws_instance.utility.public_dns}:."
+  }
+
+  /* remote setup of ansible  and inventory file */
   provisioner "remote-exec" {
     inline = [
-    "chmod +x /tmp/bootstrap.sh /tmp/userswitch.sh",
-    "sudo /tmp/bootstrap.sh",
-    "sudo /tmp/userswitch.sh"
+    "chmod 600 /home/centos/.ssh/mykey",
+    "sudo yum install http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y",
+    "sudo yum update -y",
+    "sudo yum install ansible -y",
+    "echo \"[utility]\" > ansiblehosts.txt",
+    "echo ${aws_instance.utility.private_dns} >> ansiblehosts.txt",
+    "echo \"\" >> ansiblehosts.txt",
+    "echo \"${template_file.cluster_hosts.rendered}\" >> ansiblehosts.txt",
+    "sudo su -c 'cat ansiblehosts.txt > /etc/ansible/hosts'",
+    "echo ${aws_instance.utility.private_dns} > ambariserver.txt"
     ]
     connection {
       type = "ssh"
@@ -63,52 +70,9 @@ resource "aws_instance" "utility" {
 }
 
 /* output the instance addresses */
-output "util_public_dns" {
-  value = "${aws_instance.utility.public_dns}"
-}
-output "util_private_dns" {
+output "utility_private_address" {
   value = "${aws_instance.utility.private_dns}"
 }
-
-/* create the utility tier security group */
-resource "aws_security_group" "sg_utility_access" {
-  name = "sg_utility_access"
-  description = "Allow inbound access to the utility tier"
-  
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
- 
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-/* create a second group for cluster back-connections */
-resource "aws_security_group" "sg_clus_util_access" {
-  name = "sg_clus_util_access"
-  description = "Allow new connections from the cluster"
-
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    security_groups = ["${aws_security_group.sg_cluster_access.id}"]
-  }
-}
-
-/* output the group id */
-output "sg_utility_access_id" {
-  value = "${aws_security_group.sg_utility_access.id}"
-}
-
-/* output the group id */
-output "sg_clus_util_access_id" {
-  value = "${aws_security_group.sg_clus_util_access.id}"
+output "utility_public_dns" {
+  value = "${aws_instance.utility.public_dns}"
 }

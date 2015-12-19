@@ -28,43 +28,4 @@ resource "aws_instance" "mnode" {
 
   # cluster size
   count = "${var.count.mnodes}"
-
-  /* copy up and execute the user data script */
-  provisioner "file" {
-    source = "scripts/mnode_bootstrap.sh"
-    destination = "/tmp/bootstrap.sh"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
-  provisioner "file" {
-    source = "scripts/userswitch.sh"
-    destination = "/tmp/userswitch.sh"
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
-  provisioner "remote-exec" {
-    inline = [
-    "chmod +x /tmp/bootstrap.sh /tmp/userswitch.sh",
-    "sudo /tmp/bootstrap.sh",
-    "sudo sed -i s/hostname=localhost/hostname=${aws_instance.utility.private_dns}/ /etc/ambari-agent/conf/ambari-agent.ini",
-    "sudo ambari-agent start",
-    "sudo /tmp/userswitch.sh"
-    ]
-    connection {
-      type = "ssh"
-      user = "centos"
-      key_file = "${var.keyfile}"
-    }
-  }
-}
-
-/* output the instance address */
-output "mnode_private_dns" {
-  value = "${join(",", aws_instance.mnode.*.private_dns)}"
 }

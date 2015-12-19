@@ -1,0 +1,29 @@
+---
+# stop all the ambari agents
+- hosts: cnodes
+  vars:
+   var_remote_user: centos
+   var_sudo: yes
+  remote_user: "{{ var_remote_user }}"
+  sudo: "{{ var_sudo }}"
+  tasks:
+  - name: stop the ambari agent (cnodes)
+    command: ambari-agent stop
+- hosts: mnodes
+  vars:
+   var_remote_user: centos
+   var_sudo: yes
+  remote_user: "{{ var_remote_user }}"
+  sudo: "{{ var_sudo }}"
+  tasks:
+  - name: stop the ambari agent (mnodes)
+    command: ambari-agent stop
+- hosts: utility
+  vars:
+   var_remote_user: centos
+   var_sudo: yes
+  remote_user: "{{ var_remote_user }}"
+  sudo: "{{ var_sudo }}"
+  tasks:
+  - name: stop the ambari server (utility)
+    command: ambari-server stop
