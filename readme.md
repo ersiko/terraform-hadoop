@@ -24,7 +24,7 @@ Instructions:
 - Output from the terraform command includes the utility host's private and public dns addresses.
 - Connect to the remote network via ssh SOCKS proxy:
 ```
-$ ssh -i ~/.ssh/myrsakey -D 55055 [terraform output: "util_public_dns"]
+$ ssh -i ~/.ssh/myrsakey -l centos -D 55055 [terraform output: "util_public_dns"]
 ```
 - Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
 - From the utility host, run the ansible playbooks, they should complete without failure:
