@@ -1,6 +1,0 @@
-[cnodes]
-${cnode_addresses}
-
-[mnodes]
-${mnode_addresses}
-
